@@ -19,10 +19,8 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 
-// unnamed namespace only because the implementation is in this
-// header file and we don't want to export symbols to the obj files
-namespace
-{
+
+
 
 namespace tk
 {
@@ -197,7 +195,7 @@ public:
 // spline implementation
 // -----------------------
 
-void
+inline void
 spline::set_boundary( spline::bd_type left, double left_value, spline::bd_type right, double right_value )
 {
   assert( m_x.size() == 0 ); // set_points() must not have happened yet
@@ -207,7 +205,7 @@ spline::set_boundary( spline::bd_type left, double left_value, spline::bd_type r
   m_right_value = right_value;
 }
 
-void
+inline void
 spline::set_coeffs_from_b()
 {
   assert( m_x.size() == m_y.size() );
@@ -232,7 +230,7 @@ spline::set_coeffs_from_b()
   m_c0 = ( m_left == first_deriv ) ? 0.0 : m_c[0];
 }
 
-void
+inline void
 spline::set_points( const std::vector<double>& x, const std::vector<double>& y, spline_type type )
 {
   assert( x.size() == y.size() );
@@ -401,7 +399,7 @@ spline::set_points( const std::vector<double>& x, const std::vector<double>& y, 
   m_c0 = ( m_left == first_deriv ) ? 0.0 : m_c[0];
 }
 
-bool
+inline bool
 spline::make_monotonic()
 {
   assert( m_x.size() == m_y.size() );
@@ -460,7 +458,7 @@ spline::make_monotonic()
 }
 
 // return the closest idx so that m_x[idx] <= x (return 0 if x<m_x[0])
-size_t
+inline size_t
 spline::find_closest( double x ) const
 {
   std::vector<double>::const_iterator it;
@@ -469,7 +467,7 @@ spline::find_closest( double x ) const
   return idx;
 }
 
-double
+inline double
 spline::operator()( double x ) const
 {
   // polynomial evaluation using Horner's scheme
@@ -500,7 +498,7 @@ spline::operator()( double x ) const
   return interpol;
 }
 
-double
+inline double
 spline::deriv( int order, double x ) const
 {
   assert( order > 0 );
@@ -564,7 +562,7 @@ spline::deriv( int order, double x ) const
 }
 
 #ifdef HAVE_SSTREAM
-std::string
+inline std::string
 spline::info() const
 {
   std::stringstream ss;
@@ -586,12 +584,12 @@ namespace internal
 // band_matrix implementation
 // -------------------------
 
-band_matrix::band_matrix( int dim, int n_u, int n_l )
+inline band_matrix::band_matrix( int dim, int n_u, int n_l )
 {
   resize( dim, n_u, n_l );
 }
 
-void
+inline void
 band_matrix::resize( int dim, int n_u, int n_l )
 {
   assert( dim > 0 );
@@ -609,7 +607,7 @@ band_matrix::resize( int dim, int n_u, int n_l )
   }
 }
 
-int
+inline int
 band_matrix::dim() const
 {
   if( m_upper.size() > 0 )
@@ -624,7 +622,7 @@ band_matrix::dim() const
 
 // defines the new operator (), so that we can access the elements
 // by A(i,j), index going from i=0,...,dim()-1
-double&
+inline double&
 band_matrix::operator()( int i, int j )
 {
   int k = j - i; // what band is the entry
@@ -637,7 +635,7 @@ band_matrix::operator()( int i, int j )
     return m_lower[-k][i];
 }
 
-double
+inline double
 band_matrix::operator()( int i, int j ) const
 {
   int k = j - i; // what band is the entry
@@ -651,14 +649,14 @@ band_matrix::operator()( int i, int j ) const
 }
 
 // second diag (used in LU decomposition), saved in m_lower
-double
+inline double
 band_matrix::saved_diag( int i ) const
 {
   assert( ( i >= 0 ) && ( i < dim() ) );
   return m_lower[0][i];
 }
 
-double&
+inline double&
 band_matrix::saved_diag( int i )
 {
   assert( ( i >= 0 ) && ( i < dim() ) );
@@ -666,7 +664,7 @@ band_matrix::saved_diag( int i )
 }
 
 // LR-Decomposition of a band matrix
-void
+inline void
 band_matrix::lu_decompose()
 {
   int    i_max, j_max;
@@ -708,7 +706,7 @@ band_matrix::lu_decompose()
 }
 
 // solves Ly=b
-std::vector<double>
+inline std::vector<double>
 band_matrix::l_solve( const std::vector<double>& b ) const
 {
   assert( this->dim() == (int) b.size() );
@@ -727,7 +725,7 @@ band_matrix::l_solve( const std::vector<double>& b ) const
 }
 
 // solves Rx=y
-std::vector<double>
+inline std::vector<double>
 band_matrix::r_solve( const std::vector<double>& b ) const
 {
   assert( this->dim() == (int) b.size() );
@@ -745,7 +743,7 @@ band_matrix::r_solve( const std::vector<double>& b ) const
   return x;
 }
 
-std::vector<double>
+inline std::vector<double>
 band_matrix::lu_solve( const std::vector<double>& b, bool is_lu_decomposed )
 {
   assert( this->dim() == (int) b.size() );
@@ -765,7 +763,7 @@ band_matrix::lu_solve( const std::vector<double>& b, bool is_lu_decomposed )
 } // namespace tk
 
 
-} // namespace
+
 
 #pragma GCC diagnostic pop
 
